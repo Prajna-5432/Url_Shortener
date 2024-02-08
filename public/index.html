@@ -1,0 +1,70 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Shortener</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 50px;
+    }
+
+    input {
+      width: 300px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px;
+    }
+
+    #short-url {
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>URL Shortener</h2>
+  
+  <label for="original-url">Enter URL:</label>
+  <input type="url" id="original-url" placeholder="Enter the URL to shorten" required>
+  <button onclick="shortenUrl()">Shorten</button>
+
+  <p id="short-url"></p>
+
+  <script>
+    async function shortenUrl() {
+      const originalUrl = document.getElementById('original-url').value;
+
+      try {
+        const response = await fetch('/shorten', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ originalUrl })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Display the short URL
+        const shortUrlDisplay = document.getElementById('short-url');
+        shortUrlDisplay.textContent = `Short URL: ${data.shortUrl}`;
+      } catch (error) {
+        console.error('Fetch error:', error.message);
+      }
+    }
+  </script>
+
+</body>
+</html>
